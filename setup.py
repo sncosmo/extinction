@@ -33,7 +33,7 @@ extensions = [
         source_files,
         include_dirs=include_dirs,
         depends=depends_files,
-        extra_compile_args=["-std=c99"],
+        extra_compile_args=["-std=c11"],
     )
 ]
 
