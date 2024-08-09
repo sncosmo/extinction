@@ -7,7 +7,6 @@ import numpy
 from setuptools import setup
 from setuptools.extension import Extension
 
-
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
@@ -49,5 +48,5 @@ setup(
     author_email="kylebarbary@gmail.com",
     ext_modules=extensions,
     install_requires=["numpy>=1.13.3"],
-    python_requires=">=3.5",
+    python_requires=">=3.6",
 )
