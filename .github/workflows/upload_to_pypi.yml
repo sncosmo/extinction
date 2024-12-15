@@ -13,9 +13,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: '3.x'
@@ -25,9 +25,9 @@ jobs:
         # available yet which can cause the build to fail. Keep going, and upload
         # the wheels for all of the previous versions when that happens.
         continue-on-error: true
-        uses: pypa/cibuildwheel@v2.1.1
+        uses: pypa/cibuildwheel@v2.20.0
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
 
@@ -35,9 +35,9 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: '3.x'
@@ -48,7 +48,7 @@ jobs:
       - name: Build sdist
         run: python -m build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
 
@@ -57,12 +57,12 @@ jobs:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
+      - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
