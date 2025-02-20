@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: If you use extinction, please cite it using these metadata.
+title: extinction
+abstract: Python Fast interstellar dust extinction laws in Python
+repository-code: https://github.com/sncosmo/extinction
+license: MIT
+doi: 10.5281/zenodo.804966
+authors:
+- given-names: Kyle
+  family-names: Barbary
+  affiliation: University of California, Berkeley
+  orcid: https://orcid.org/0000-0002-2532-3696
+- given-names: Luke
+  family-names: Shingles
+  affiliation: GSI, Darmstadt
+  orcid: https://orcid.org/0000-0002-5738-1612
+- given-names: Jeremy
+  family-names: Lusk
+  affiliation: University of Central Arkansas
+  orcid: https://orcid.org/0000-0001-6843-1278
+- given-names: Kyle
+  family-names: Boone
+  affiliation: University of Washington
+  orcid: https://orcid.org/0000-0002-5828-6211
+- given-names: Benjamin
+  family-names: Rose
+  affiliation: Baylor University
+  orcid: https://orcid.org/0000-0002-1873-8973
