@@ -1,5 +1,5 @@
 #!python
-#cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
+#cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True, freethreading_compatible=True
 
 """Interstellar dust extinction functions."""
 

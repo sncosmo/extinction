@@ -48,5 +48,5 @@ setup(
     author_email="kylebarbary@gmail.com",
     ext_modules=extensions,
     install_requires=["numpy>=1.13.3"],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
 )
