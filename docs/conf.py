@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
 #
 # build requires sphinx_rtd_theme and numpydoc.
 
 import sys
 import os
-import sphinx_rtd_theme
-import matplotlib.sphinxext.plot_directive
 import extinction
 
 # ensure that plot helper is on the path
-sys.path.insert(0, os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # generate api directory if it doesn't already exist
 if not os.path.exists('api'):
@@ -18,8 +15,8 @@ if not os.path.exists('api'):
 # -- General configuration ------------------------------------------------
 
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None)}
+    'python': ('https://docs.python.org/3/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None)}
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -27,12 +24,12 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'numpydoc',
-    matplotlib.sphinxext.plot_directive.__name__]
+    'matplotlib.sphinxext.plot_directive']
 
 numpydoc_show_class_members = False
 autosummary_generate = True
 autoclass_content = "class"
-autodoc_default_flags = ["members", "no-special-members"]
+autodoc_default_options = {"members": True}
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -72,7 +69,6 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

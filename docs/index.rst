@@ -17,9 +17,9 @@ Using pip (requires a C compiler)::
 
     pip install extinction
 
-Extinction depends on numpy and scipy.
+Extinction depends on numpy.
 
-**Development version / source code:** http://github.com/kbarbary/extinction
+**Development version / source code:** https://github.com/sncosmo/extinction
 
 
 Usage
