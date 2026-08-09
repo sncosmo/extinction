@@ -1,7 +1,10 @@
 [build-system]
 requires = [
     "setuptools>=77",
-    "Cython>=3",
+    # 3.1 is the first release that honours the freethreading_compatible
+    # directive in extinction.pyx; earlier versions silently ignore it and
+    # emit a module that re-enables the GIL on free-threaded interpreters.
+    "Cython>=3.1",
     "numpy>=2",
 ]
 build-backend = "setuptools.build_meta"
