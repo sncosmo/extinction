@@ -40,10 +40,21 @@ Homepage = "https://github.com/sncosmo/extinction"
 Documentation = "https://extinction.readthedocs.io"
 Source = "https://github.com/sncosmo/extinction"
 
-# extinction is a single compiled module, so disable package auto-discovery,
-# which would otherwise trip over the docs/, extern/ and testdata/ directories.
 [tool.setuptools]
-py-modules = []
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# PEP 561 marker and stubs for the compiled module.
+[tool.setuptools.package-data]
+extinction = ["py.typed", "*.pyi"]
+
+# The Cython source and its generated C belong in the sdist, not in binary
+# wheels; now that they live inside the package directory, MANIFEST.in would
+# otherwise pull them in.
+[tool.setuptools.exclude-package-data]
+extinction = ["*.pyx", "*.c"]
 
 [tool.cibuildwheel]
 test-requires = "pytest"

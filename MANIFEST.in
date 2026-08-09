@@ -2,7 +2,7 @@ include README.md
 include LICENSE
 include setup.py
 include pyproject.toml
-include extinction.pyx
+recursive-include src *.pyx *.pyi py.typed
 include extern/bs.*
 include extern/bsplines.pxi
 include test.py
