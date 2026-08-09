@@ -4,18 +4,12 @@ import re
 import sys
 
 import numpy
+from Cython.Build import cythonize
 from setuptools import setup
 from setuptools.extension import Extension
 
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Topic :: Scientific/Engineering :: Astronomy",
-    "Intended Audience :: Science/Research",
-]
-
-# Synchronize version from code.
+# Everything except the version and the extension itself lives in
+# pyproject.toml. Synchronize the version from code.
 fname = "extinction.pyx"
 version = re.findall(r"__version__ = \"(.*?)\"", open(fname).read())[0]
 
@@ -26,27 +20,21 @@ depends_files = [
     os.path.join("extern", "bsplines.pxi")
 ]
 include_dirs = [numpy.get_include(), "extern"]
+
+# MSVC does not understand -std=c11 and only warns about it.
+extra_compile_args = [] if sys.platform == "win32" else ["-std=c11"]
+
 extensions = [
     Extension(
         "extinction",
         source_files,
         include_dirs=include_dirs,
         depends=depends_files,
-        extra_compile_args=["-std=c11"],
+        extra_compile_args=extra_compile_args,
     )
 ]
 
 setup(
-    name="extinction",
     version=version,
-    description="Fast interstellar dust extinction laws",
-    long_description="documentation: http://extinction.readthedocs.io",
-    license="MIT",
-    classifiers=classifiers,
-    url="http://github.com/kbarbary/extinction",
-    author="Kyle Barbary",
-    author_email="kylebarbary@gmail.com",
-    ext_modules=extensions,
-    install_requires=["numpy>=1.13.3"],
-    python_requires=">=3.9",
+    ext_modules=cythonize(extensions, language_level=3),
 )
