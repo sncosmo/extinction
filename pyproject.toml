@@ -58,4 +58,4 @@ extinction = ["*.pyx", "*.c"]
 
 [tool.cibuildwheel]
 test-requires = "pytest"
-test-command = "pytest {project}/test.py"
+test-command = "pytest {project}/tests"
