@@ -8,9 +8,11 @@ from Cython.Build import cythonize
 from setuptools import setup
 from setuptools.extension import Extension
 
+here = os.path.dirname(os.path.abspath(__file__))
+
 # Everything except the version and the extension itself lives in
 # pyproject.toml. Synchronize the version from code.
-fname = "extinction.pyx"
+fname = os.path.join("src", "extinction", "_extinction.pyx")
 version = re.findall(r"__version__ = \"(.*?)\"", open(fname).read())[0]
 
 # Build Cython extension
@@ -26,7 +28,7 @@ extra_compile_args = [] if sys.platform == "win32" else ["-std=c11"]
 
 extensions = [
     Extension(
-        "extinction",
+        "extinction._extinction",
         source_files,
         include_dirs=include_dirs,
         depends=depends_files,
@@ -36,5 +38,7 @@ extensions = [
 
 setup(
     version=version,
-    ext_modules=cythonize(extensions, language_level=3),
+    # `include "extern/bsplines.pxi"` in the .pyx resolves against the project
+    # root, not the directory holding the .pyx.
+    ext_modules=cythonize(extensions, language_level=3, include_path=[here]),
 )
