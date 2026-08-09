@@ -5,3 +5,5 @@ include pyproject.toml
 include extinction.pyx
 include extern/bs.*
 include extern/bsplines.pxi
+include test.py
+recursive-include testdata *

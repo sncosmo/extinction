@@ -7,6 +7,11 @@ from numpy.testing import assert_allclose
 
 import extinction
 
+# Resolve test data relative to this file so the suite can be run from any
+# working directory, including against an installed wheel.
+TESTDATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'testdata')
+
 
 def test_ccm89():
     # NOTE: Test is only to precision of 0.016 because there is a discrepancy
@@ -136,7 +141,7 @@ def test_fitzpatrick99_idl():
     """Test that result matches implementation in IDL procedure FM_UNRED"""
 
     for r_v in (2.3, 3.1, 4.0, 5.3):
-        fname = os.path.join('testdata', 'fm_unred_{:3.1f}.dat'.format(r_v))
+        fname = os.path.join(TESTDATA_DIR, 'fm_unred_{:3.1f}.dat'.format(r_v))
         wave, a_lambda_ref = np.loadtxt(fname, unpack=True)
         a_lambda = extinction.Fitzpatrick99(r_v)(wave, 1.0)
         assert_allclose(a_lambda, a_lambda_ref, rtol=0.00005)
