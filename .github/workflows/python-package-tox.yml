@@ -15,7 +15,7 @@ jobs:
         python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15", "3.15t"]
       fail-fast: false
 
-    runs-on: 'ubuntu-24.04'
+    runs-on: 'ubuntu-latest'
 
     name: Test on python ${{ matrix.python }}
     steps:
