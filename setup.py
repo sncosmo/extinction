@@ -26,12 +26,17 @@ include_dirs = [numpy.get_include(), "extern"]
 # MSVC does not understand -std=c11 and only warns about it.
 extra_compile_args = [] if sys.platform == "win32" else ["-std=c11"]
 
+# Pin the numpy C API level, so that a future numpy removing an already
+# deprecated API is a compile error here rather than a surprise at runtime.
+define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+
 extensions = [
     Extension(
         "extinction._extinction",
         source_files,
         include_dirs=include_dirs,
         depends=depends_files,
+        define_macros=define_macros,
         extra_compile_args=extra_compile_args,
     )
 ]
