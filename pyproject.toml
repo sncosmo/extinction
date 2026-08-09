@@ -56,6 +56,9 @@ extinction = ["py.typed", "*.pyi"]
 [tool.setuptools.exclude-package-data]
 extinction = ["*.pyx", "*.c"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [tool.cibuildwheel]
 test-requires = "pytest"
-test-command = "pytest {project}/test.py"
+test-command = "pytest {project}/tests"

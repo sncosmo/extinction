@@ -5,5 +5,5 @@ include pyproject.toml
 recursive-include src *.pyx *.pyi py.typed
 include extern/bs.*
 include extern/bsplines.pxi
-include test.py
-recursive-include testdata *
+recursive-include tests *
+global-exclude __pycache__/* *.py[cod]
