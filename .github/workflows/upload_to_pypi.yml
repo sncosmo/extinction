@@ -23,7 +23,7 @@ jobs:
         # available yet which can cause the build to fail. Keep going, and upload
         # the wheels for all of the previous versions when that happens.
         continue-on-error: true
-        uses: pypa/cibuildwheel@v4.2.0
+        uses: pypa/cibuildwheel@v4.2.1
 
       - uses: actions/upload-artifact@v7
         with:
