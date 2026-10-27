@@ -73,7 +73,22 @@ testpaths = ["tests"]
 [tool.ruff]
 extend-exclude = ["extern"]
 
+# uv rebuilds the project only when one of these files changes, and this list
+# replaces the default one. Add the Cython and C sources, so that `uv run` and
+# `uv sync` rebuild the compiled extension after they change.
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "setup.py" },
+    { file = "src/extinction/*.pyx" },
+    { file = "extern/*" },
+]
+
 [tool.cibuildwheel]
 build-frontend = "build[uv]"
+# numpy has no Windows ARM64 wheels for Python 3.10, and its source build fails
+# on windows-11-arm. cibuildwheel would stop there, before it builds the wheels
+# for the newer Python versions.
+skip = ["cp310-win_arm64"]
 test-groups = ["test"]
 test-command = "pytest {project}/tests"

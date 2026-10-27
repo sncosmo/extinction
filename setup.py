@@ -42,6 +42,11 @@ extensions = [
 setup(
     version=version,
     # `include "extern/bsplines.pxi"` in the .pyx resolves against the project
-    # root, not the directory holding the .pyx.
-    ext_modules=cythonize(extensions, language_level=3, include_path=[here]),
+    # root, not the directory holding the .pyx. Always regenerate the C, which
+    # depends on the numpy .pxd of the build environment: uv links build
+    # environments from its cache with old mtimes, so Cython's timestamp check
+    # can reuse a .c made for another numpy, which then fails to compile.
+    ext_modules=cythonize(
+        extensions, language_level=3, include_path=[here], force=True
+    ),
 )

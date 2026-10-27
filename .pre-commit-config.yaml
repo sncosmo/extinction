@@ -1,6 +1,7 @@
 # Run with prek (https://github.com/j178/prek) or pre-commit:
-#   uvx prek install   # run the hooks on each commit
-#   uvx prek run -a    # run the hooks on all files
+#   uv tool install prek   # a hook installed with uvx breaks after uv cache clean
+#   prek install           # run the hooks on each commit
+#   prek run -a            # run the hooks on all files
 # Leave vendored code and test data byte for byte as upstream supplied them.
 exclude: ^(extern|tests/testdata)/
 
@@ -29,17 +30,17 @@ repos:
       # Make sure that uv.lock agrees with pyproject.toml.
       - id: uv-lock
 
-  - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.31.1
-    hooks:
-      # Find security problems in the GitHub Actions workflows.
-      - id: zizmor
-
   - repo: local
     hooks:
       - id: ty
         name: ty check
-        entry: uv run --locked ty check
+        # ty reads the stub in src/, so do not install the project, which
+        # compiles the extension and needs a C compiler. numpy comes in
+        # through matplotlib in the docs group.
+        entry: uv run --locked --only-group dev ty check
         language: system
         types_or: [python, pyi]
         pass_filenames: false
+        # Also run when only pyproject.toml or uv.lock changes, which can
+        # change the result, and on commits that only delete files.
+        always_run: true

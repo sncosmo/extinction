@@ -11,9 +11,11 @@ sphinx:
 
 python:
   install:
-    # Install the locked docs group. conf.py imports extinction to read the
-    # version, and the plot directives call into it, so this also installs
-    # the project with its compiled extension.
+    # Read the Docs runs `uv sync --group docs`, which installs the versions
+    # in uv.lock. It cannot pass --no-default-groups, so uv also installs the
+    # default dev group, which includes docs. conf.py imports extinction to
+    # read the version, and the plot directives call into it, so this also
+    # installs the project with its compiled extension.
     - method: uv
       command: sync
       groups:

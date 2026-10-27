@@ -23,18 +23,15 @@ jobs:
 
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
 
-      # The build[uv] frontend of cibuildwheel needs uv on Windows and macOS.
-      # Do not use a cache in a release workflow.
-      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with:
-          enable-cache: false
-
       - name: Build wheels
         # For very recent Python versions, wheels from e.g. numpy might not be
         # available yet which can cause the build to fail. Keep going, and upload
         # the wheels for all of the previous versions when that happens.
         continue-on-error: true
         uses: pypa/cibuildwheel@b9e566a2b284570af229f6c2a33673410d0389a3 # v4.3.4
+        with:
+          # The build[uv] frontend of cibuildwheel needs uv on Windows and macOS.
+          extras: uv
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -54,7 +51,9 @@ jobs:
           enable-cache: false
 
       - name: Build sdist
-        run: uv build --sdist
+        # Without --sdist, uv also builds a wheel from the sdist, which checks
+        # that the sdist builds. Only the sdist is uploaded.
+        run: uv build
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
