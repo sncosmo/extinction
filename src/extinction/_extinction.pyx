@@ -96,7 +96,7 @@ cdef inline void ccm89ab_invum(double x, double *a, double *b):
         ccm89ab_fuv_invum(x, a, b)
 
 
-def ccm89(double[:] wave, double a_v, double r_v, unit='aa',
+def ccm89(const double[:] wave, double a_v, double r_v, unit='aa',
           np.ndarray out=None):
     """ccm89(wave, a_v, r_v, unit='aa', out=None)
 
@@ -201,7 +201,7 @@ cdef inline void od94ab_invum(double x, double *a, double *b):
         ccm89ab_fuv_invum(x, a, b)
 
 
-def odonnell94(double[:] wave, double a_v, double r_v, unit='aa',
+def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
          np.ndarray out=None):
     """odonnell94(wave, a_v, r_v, unit='aa', out=None)
 
@@ -397,7 +397,8 @@ cdef class Fitzpatrick99(object):
 
 
     def __call__(self, np.ndarray wave not None, double a_v, unit='aa'):
-        cdef double[:] wave_view, out_view
+        cdef const double[:] wave_view
+        cdef double[:] out_view
         cdef double r_v = self.r_v
         cdef double ebv = a_v / r_v
         cdef size_t i
@@ -569,7 +570,8 @@ def fm07(np.ndarray wave not None, double a_v, unit='aa'):
 
     """
 
-    cdef double[:] wave_view, out_view
+    cdef const double[:] wave_view
+    cdef double[:] out_view
     cdef double ebv = a_v / FM07_R_V
     cdef size_t i
     cdef size_t n
@@ -658,7 +660,7 @@ cdef inline double calzetti00_invum(double x, double r_v):
     return 1.0 + k / r_v
 
 
-def calzetti00(double[:] wave, double a_v, double r_v, unit='aa',
+def calzetti00(const double[:] wave, double a_v, double r_v, unit='aa',
                np.ndarray out=None):
     """calzetti00(wave, a_v, r_v, unit='aa', out=None)
 

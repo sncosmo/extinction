@@ -129,8 +129,10 @@ cdef int assert_ok(bs_errorcode code) except -1:
         raise Exception("unrecognized error")
 
 
-cdef inline bs_array to_bs_array(double[:] x):
-    return bs_array(&x[0], x.shape[0], x.strides[0]//sizeof(double))
+cdef inline bs_array to_bs_array(const double[:] x):
+    # bs_array is also used for outputs, so its pointer is not const.
+    # bs_spline1d_eval only reads its input array.
+    return bs_array(<double *>&x[0], x.shape[0], x.strides[0]//sizeof(double))
 
 
 cdef inline bs_array2d to_bs_array2d(double[:, :] x):
