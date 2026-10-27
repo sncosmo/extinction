@@ -156,7 +156,7 @@ def ccm89(double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.shape == wave.shape
+        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
         assert out.dtype == np.float64
 
     cdef scalar_func convert_wave
@@ -264,7 +264,7 @@ def odonnell94(double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.shape == wave.shape
+        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
         assert out.dtype == np.float64
 
     cdef scalar_func convert_wave
@@ -699,7 +699,7 @@ def calzetti00(double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.shape == wave.shape
+        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
         assert out.dtype == np.float64
 
     cdef scalar_func convert_wave
