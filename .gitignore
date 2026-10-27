@@ -76,3 +76,4 @@ Pipfile.lock
 
 # uv
 .venv/
+.ruff_cache/

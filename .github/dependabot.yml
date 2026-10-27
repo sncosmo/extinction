@@ -5,6 +5,9 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Wait a week before updating to a new release.
+    cooldown:
+      default-days: 7
     groups:
       actions:
         patterns:
@@ -14,6 +17,9 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Wait a week before updating to a new release.
+    cooldown:
+      default-days: 7
     groups:
       python-packages:
         patterns:

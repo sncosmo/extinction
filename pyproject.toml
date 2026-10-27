@@ -16,7 +16,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Kyle Barbary", email = "kylebarbary@gmail.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 # Wheels are built against numpy 2, which stays ABI compatible back to 1.19.3.
 dependencies = ["numpy>=1.19.3"]
 dynamic = ["version"]
@@ -24,7 +24,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -36,7 +35,16 @@ classifiers = [
 ]
 
 [dependency-groups]
-dev = ["pytest", "ty"]
+test = ["pytest"]
+docs = ["matplotlib", "numpydoc", "sphinx", "sphinx-rtd-theme"]
+dev = [
+    { include-group = "test" },
+    { include-group = "docs" },
+    "ty",
+    # The build requirements, so that ty can check setup.py.
+    "Cython>=3.1",
+    "setuptools>=77",
+]
 
 [project.urls]
 Homepage = "https://github.com/sncosmo/extinction"
@@ -62,10 +70,10 @@ extinction = ["*.pyx", "*.c"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-[tool.ty.src]
-# benchmark.py, setup.py and the docs scripts are not type checked yet.
-include = ["src", "tests"]
+[tool.ruff]
+extend-exclude = ["extern"]
 
 [tool.cibuildwheel]
-test-requires = "pytest"
+build-frontend = "build[uv]"
+test-groups = ["test"]
 test-command = "pytest {project}/tests"

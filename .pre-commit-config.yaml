@@ -11,13 +11,29 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: end-of-file-fixer
+      # Use LF line endings, not CRLF.
+      - id: mixed-line-ending
+        args: [--fix=lf]
       - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.13.6
     hooks:
       # Make sure that uv.lock agrees with pyproject.toml.
       - id: uv-lock
+
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.31.1
+    hooks:
+      # Find security problems in the GitHub Actions workflows.
+      - id: zizmor
 
   - repo: local
     hooks:
