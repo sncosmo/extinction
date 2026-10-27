@@ -9,3 +9,12 @@ updates:
       actions:
         patterns:
           - "*"
+
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      python-packages:
+        patterns:
+          - "*"

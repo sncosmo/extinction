@@ -73,3 +73,6 @@ target/
 # Pipenv
 Pipfile
 Pipfile.lock
+
+# uv
+.venv/

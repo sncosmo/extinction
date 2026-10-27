@@ -35,6 +35,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 
+[dependency-groups]
+dev = ["pytest", "ty"]
+
 [project.urls]
 Homepage = "https://github.com/sncosmo/extinction"
 Documentation = "https://extinction.readthedocs.io"
@@ -58,6 +61,10 @@ extinction = ["*.pyx", "*.c"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ty.src]
+# benchmark.py, setup.py and the docs scripts are not type checked yet.
+include = ["src", "tests"]
 
 [tool.cibuildwheel]
 test-requires = "pytest"
