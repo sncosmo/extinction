@@ -1,5 +1,5 @@
-# This workflow will install tox and use it to run tests.
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# This workflow uses uv to install the locked dependencies from uv.lock and
+# run the tests, and uses prek to run the hooks in .pre-commit-config.yaml.
 
 name: Test
 
@@ -15,19 +15,32 @@ jobs:
         python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15", "3.15t"]
       fail-fast: false
 
-    runs-on: 'ubuntu-24.04'
+    runs-on: ubuntu-latest
 
     name: Test on python ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v7
       - name: Setup Python
+        id: setup-python
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
           allow-prereleases: true
           check-latest: true
-      - name: Install Tox
-        run: pip install tox
-      - name: Run Tox
-        # Run tox using the version of Python in `PATH`
-        run: tox -e py
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v10.3.2
+      - name: Run tests
+        # Use the Python from setup-python, which also supplies pre-releases.
+        env:
+          UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
+        run: uv run --locked pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Run prek hooks
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v10.3.2
+      - name: Run prek
+        uses: j178/prek-action@v3.1.0
