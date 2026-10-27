@@ -30,7 +30,7 @@ jobs:
         # builds in it pass, so a failure loses every wheel of that container,
         # and a manylinux failure also stops the musllinux builds.
         continue-on-error: true
-        uses: pypa/cibuildwheel@b9e566a2b284570af229f6c2a33673410d0389a3 # v4.3.4
+        uses: pypa/cibuildwheel@f9b966cfadf4109556cadc5bb39ddb72d0ce664e # v4.3.5
         with:
           # The build[uv] frontend of cibuildwheel needs uv on Windows and macOS.
           extras: uv
