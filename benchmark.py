@@ -48,7 +48,7 @@ wave = numpy.logspace(numpy.log10({minwave}),
     print()
 
 if 'fitzpatrick99' in args:
-    
+
     # -----------------------------------------------------------------------
     # Fitzpatrick init
     setup = """
@@ -136,4 +136,3 @@ flux = numpy.ones({size:d})
 #        number *= 10
 #
 #    # run the loop `number` times
-    

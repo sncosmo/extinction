@@ -57,7 +57,7 @@ Get extinction in magnitudes at a set of wavelengths for various dust laws::
   # Cardelli, Clayton & Mathis (1989) with A_V = 1 and R_V = 3.1
   >>> extinction.ccm89(wave, 1.0, 3.1)
   array([ 2.84252644,  1.4645557 ,  0.59748901])  # extinction in magnitudes
-   
+
   # O'Donnell (1994)
   >>> extinction.odonnell94(wave, 1.0, 3.1)
   array([ 2.84252644,  1.42617802,  0.60793495])
@@ -71,7 +71,7 @@ The Fitzpatrick & Massa (2007) function has a fixed :math:`R_V` of 3.1::
 
    >>> extinction.fm07(wave, 1.0)
    array([ 2.90478329,  1.42645161,  0.54703201])
-   
+
 All extinction laws accept a ``unit`` keyword to change the interpretation of
 the wavelength array from Angstroms to inverse microns::
 
@@ -110,7 +110,7 @@ Comparison of functions
    import numpy as np
    import extinction
    from extinction_plot import extinction_figure
-   
+
    wave = np.logspace(np.log10(910.), np.log10(30000.), 2000)
 
    a_lambda = {'ccm89': extinction.ccm89(wave, 1.0, 3.1),
@@ -119,7 +119,7 @@ Comparison of functions
                'fm07': extinction.fm07(wave, 1.0)}
    extinction_figure(wave, a_lambda, 'fitzpatrick99')
 
-           
+
 R_V dependence of odonnell94
 ............................
 
@@ -129,7 +129,7 @@ R_V dependence of odonnell94
    import numpy as np
    import extinction
    from extinction_plot import extinction_figure
-   
+
    wave = np.logspace(np.log10(910.), np.log10(30000.), 2000)
 
    a_lambda = OrderedDict([
@@ -153,7 +153,7 @@ R_V dependence of Fitzpatrick99
    import numpy as np
    import extinction
    from extinction_plot import extinction_figure
-   
+
    wave = np.logspace(np.log10(910.), np.log10(30000.), 2000)
 
    a_lambda = OrderedDict([

@@ -248,7 +248,7 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     References
     ----------
     .. [1] Cardelli, J. A., Clayton, G. C., & Mathis, J. S. 1989, ApJ, 345, 245
-    .. [2] O'Donnell, J. E. 1994, ApJ, 422, 158O 
+    .. [2] O'Donnell, J. E. 1994, ApJ, 422, 158O
     .. [3] Savage & Mathis 1979, ARA&A, 17, 73
     .. [4] Longo et al. 1989, ApJ, 339,474
     .. [5] Valencic et al. 2004, ApJ, 616, 912
@@ -371,7 +371,7 @@ cdef class Fitzpatrick99(object):
 
     cdef bs_spline1d *spline   # pointer to c struct
     cdef readonly double r_v
-    
+
     def __cinit__(self, double r_v=3.1):
         self.r_v = r_v
 
@@ -404,7 +404,7 @@ cdef class Fitzpatrick99(object):
         cdef size_t i
         cdef size_t n
         cdef bs_errorcode code
-        
+
         # translate `wave` to inverse microns
         if unit == 'invum':
             pass
@@ -426,7 +426,7 @@ cdef class Fitzpatrick99(object):
         code = bs_spline1d_eval(self.spline, to_bs_array(wave_view),
                                 to_bs_array(out_view))
         assert_ok(code)
-        
+
         # Analytic function in the UV (< 2700 Angstroms).
         for i in range(n):
             # for optical/IR, `out` is actually k, but we wanted
@@ -618,7 +618,7 @@ def fm07(np.ndarray wave not None, double a_v, unit='aa'):
                             to_bs_array(out_view))
     assert_ok(code)
     bs_spline1d_free(spline)
-    
+
     # Analytic function in the UV (< 2700 Angstroms).
     for i in range(n):
         # for optical/IR, `out` is actually k, but we wanted
@@ -651,7 +651,7 @@ cdef inline double calzetti00k_ir_invum(double x):
 
 cdef inline double calzetti00_invum(double x, double r_v):
     cdef double k
-    
+
     if x > 1.5873015873015872:  # 1. / 0.63
         k = calzetti00k_uv_invum(x)
     else:
@@ -768,7 +768,7 @@ def remove(extinction, flux, inplace=False):
 
     Remove extinction from flux values.
 
-    This is a convenience function to "deredden" fluxes. It simply performs 
+    This is a convenience function to "deredden" fluxes. It simply performs
     ``flux * 10**(0.4 * extinction)``: flux is increased (for positive
     extinction values).
 

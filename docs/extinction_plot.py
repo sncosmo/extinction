@@ -24,7 +24,7 @@ def extinction_figure(wave, a_lambda, residual_from, residual_lims=(-0.1, 0.4), 
     plt.axvline(x=3030.3030, ls=':', c='k')
     plt.axvline(x=9090.9091, ls=':', c='k')
     plt.axvspan(wave[0], 1150., fc='0.8', ec='none', zorder=-1000)
-    plt.axvspan(1150., 1250., fc='0.9', ec='none', zorder=-1000)    
+    plt.axvspan(1150., 1250., fc='0.9', ec='none', zorder=-1000)
     plt.text(0.65, 0.95, title_text, transform=ax.transAxes, va='top',
              ha='right', size='x-large')
     plt.ylabel('Extinction ($A(\lambda)$ / $A_V$)')

@@ -37,4 +37,3 @@ def test_readonly_wavelengths(law, unit, step):
     assert_array_equal(wave, original)
     assert not wave.flags.writeable
     assert actual.flags.writeable
-
