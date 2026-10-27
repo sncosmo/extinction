@@ -1,0 +1,29 @@
+# Run with prek (https://github.com/j178/prek) or pre-commit:
+#   uvx prek install   # run the hooks on each commit
+#   uvx prek run -a    # run the hooks on all files
+# Leave vendored code and test data byte for byte as upstream supplied them.
+exclude: ^(extern|tests/testdata)/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.6
+    hooks:
+      # Make sure that uv.lock agrees with pyproject.toml.
+      - id: uv-lock
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty check
+        entry: uv run --locked ty check
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
