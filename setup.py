@@ -13,7 +13,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 # Everything except the version and the extension itself lives in
 # pyproject.toml. Synchronize the version from code.
 fname = os.path.join("src", "extinction", "_extinction.pyx")
-with open(fname) as f:
+with open(fname, encoding="utf-8") as f:
     version = re.findall(r"__version__ = \"(.*?)\"", f.read())[0]
 
 # Build Cython extension

@@ -3,6 +3,8 @@ include LICENSE
 include setup.py
 include pyproject.toml
 recursive-include src *.pyx *.pyi py.typed
+# setup.py regenerates the C from the .pyx on every build, so do not ship it.
+exclude src/extinction/_extinction.c
 include extern/bs.*
 include extern/bsplines.pxi
 recursive-include tests *

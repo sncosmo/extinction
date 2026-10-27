@@ -41,8 +41,11 @@ dev = [
     { include-group = "test" },
     { include-group = "docs" },
     "ty",
-    # The build requirements, so that ty can check setup.py.
+    # The build requirements, so that ty can check setup.py. The ty hook does
+    # not install the project, so numpy here is also what ty uses for the
+    # stub and the tests.
     "Cython>=3.1",
+    "numpy>=2",
     "setuptools>=77",
 ]
 
@@ -61,9 +64,10 @@ where = ["src"]
 [tool.setuptools.package-data]
 extinction = ["py.typed", "*.pyi"]
 
-# The Cython source and its generated C belong in the sdist, not in binary
-# wheels; now that they live inside the package directory, MANIFEST.in would
-# otherwise pull them in.
+# The Cython source belongs in the sdist, not in binary wheels; now that it
+# lives inside the package directory, MANIFEST.in would otherwise pull it in.
+# setup.py regenerates the C next to it on every build, so neither the sdist
+# (see MANIFEST.in) nor the wheels ship the C.
 [tool.setuptools.exclude-package-data]
 extinction = ["*.pyx", "*.c"]
 
@@ -73,15 +77,18 @@ testpaths = ["tests"]
 [tool.ruff]
 extend-exclude = ["extern"]
 
-# uv rebuilds the project only when one of these files changes, and this list
+# uv rebuilds the project only when one of these changes, and this list
 # replaces the default one. Add the Cython and C sources, so that `uv run` and
-# `uv sync` rebuild the compiled extension after they change.
+# `uv sync` rebuild the compiled extension after they change. Also rebuild
+# when .venv is created again: the editable install builds the extension in
+# src/extinction, outside .venv, and `git clean -fdx` deletes both.
 [tool.uv]
 cache-keys = [
     { file = "pyproject.toml" },
     { file = "setup.py" },
     { file = "src/extinction/*.pyx" },
     { file = "extern/*" },
+    { dir = ".venv" },
 ]
 
 [tool.cibuildwheel]

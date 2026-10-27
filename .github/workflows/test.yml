@@ -5,6 +5,13 @@ name: Test
 
 on:
   push:
+    # Pull requests from dependabot run the tests through pull_request, so
+    # do not run them again for the pushes to the dependabot branches. A
+    # branch filter alone would also stop the runs for tags, so list them.
+    branches-ignore:
+      - "dependabot/**"
+    tags:
+      - "**"
   pull_request:
 
 permissions:
@@ -64,7 +71,8 @@ jobs:
         run: uv build
       - name: Test the wheel with the newest dependencies
         # Do not use uv.lock here, so that a new numpy release that breaks
-        # extinction fails CI before dependabot updates uv.lock.
+        # extinction fails CI. Dependabot does not update numpy in uv.lock,
+        # see .github/dependabot.yml.
         run: uv run --isolated --no-project --with pytest --with dist/*.whl pytest
 
   lint:
@@ -78,3 +86,8 @@ jobs:
         uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
       - name: Run prek
         uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
+        with:
+          # Use the newest prek whose checksum this version of the action
+          # knows, so that the download is verified. The default, latest,
+          # follows each new prek release at once and skips the check.
+          prek-version: latest-known

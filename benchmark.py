@@ -8,6 +8,8 @@ args = sys.argv[1:]
 if len(args) == 0:
     args = ["ccm89", "fitzpatrick99", "apply"]
 
+benchmarks: list[dict[str, Any]]
+
 if "ccm89" in args:
     setup = """
 import numpy
@@ -19,7 +21,7 @@ wave = numpy.logspace(numpy.log10({minwave}),
 
     stmt = "{name}(wave, 1.0, 3.1)"
 
-    benchmarks: list[dict[str, Any]] = [
+    benchmarks = [
         {
             "name": "ccm89",
             "minwave": 1000.0,
@@ -127,7 +129,7 @@ f = Fitzpatrick99(3.1)
 
     stmt = "f(wave, 1.0)"
 
-    benchmarks: list[dict[str, Any]] = [
+    benchmarks = [
         {"minwave": 1000.0, "maxwave": 30000.0, "size": 10, "nloops": 10000},
         {"minwave": 1000.0, "maxwave": 30000.0, "size": 100, "nloops": 10000},
         {"minwave": 1000.0, "maxwave": 30000.0, "size": 1000, "nloops": 10000},
@@ -157,7 +159,7 @@ flux = numpy.ones({size:d})
 
     stmt = "apply(ext, flux, inplace={inplace!r})"
 
-    benchmarks: list[dict[str, Any]] = [
+    benchmarks = [
         {"size": 10, "nloops": 100000, "inplace": True},
         {"size": 10, "nloops": 100000, "inplace": False},
         {"size": 100, "nloops": 100000, "inplace": True},

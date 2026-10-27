@@ -35,12 +35,13 @@ repos:
       - id: ty
         name: ty check
         # ty reads the stub in src/, so do not install the project, which
-        # compiles the extension and needs a C compiler. numpy comes in
-        # through matplotlib in the docs group.
-        entry: uv run --locked --only-group dev ty check
+        # compiles the extension and needs a C compiler. uv.lock installs
+        # numpy 2.2 on Python 3.10 and newer numpy on newer Python, and their
+        # stubs differ, so always check with Python 3.10, in a temporary
+        # environment that leaves .venv alone.
+        entry: uv run --isolated --locked --only-group dev --python 3.10 ty check
         language: system
-        types_or: [python, pyi]
         pass_filenames: false
-        # Also run when only pyproject.toml or uv.lock changes, which can
-        # change the result, and on commits that only delete files.
+        # Run on every commit, not only when Python files change: a change to
+        # pyproject.toml or uv.lock, or a deletion, can change the result.
         always_run: true
