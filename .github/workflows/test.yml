@@ -68,12 +68,16 @@ jobs:
         # Without --sdist or --wheel, uv builds the wheel from the sdist, not
         # from the checkout, so this fails when MANIFEST.in leaves out a file
         # that the build needs. The test job uses an editable install.
-        run: uv build
+        # Python 3.11 makes the cp311-abi3 wheel that the release builds.
+        run: uv build --python 3.11
+      - name: Check that the wheel uses only the stable ABI of Python 3.11
+        run: uvx abi3audit@0.0.26 --strict --report dist/*.whl
       - name: Test the wheel with the newest dependencies
         # Do not use uv.lock here, so that a new numpy release that breaks
         # extinction fails CI. Dependabot does not update numpy in uv.lock,
-        # see .github/dependabot.yml.
-        run: uv run --isolated --no-project --with pytest --with dist/*.whl pytest
+        # see .github/dependabot.yml. Use a newer Python than the build, to
+        # test that the abi3 wheel works there.
+        run: uv run --isolated --no-project --python 3.14 --with pytest --with dist/*.whl pytest
 
   lint:
     runs-on: ubuntu-latest

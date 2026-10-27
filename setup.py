@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+import sysconfig
 
 import numpy
 from Cython.Build import cythonize
@@ -28,6 +29,17 @@ extra_compile_args = [] if sys.platform == "win32" else ["-std=c11"]
 # deprecated API is a compile error here rather than a surprise at runtime.
 define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
 
+# From Python 3.11, build for the stable ABI (abi3), so that one wheel works
+# on Python 3.11 and all later versions with the GIL. The typed memoryviews
+# need the buffer protocol, which is in the limited API only from 3.11, so
+# Python 3.10 gets its own wheel. The free-threaded builds also get their own
+# wheels: their stable ABI (abi3t, from 3.15) needs support in Cython first.
+limited_api = sys.version_info >= (3, 11) and not sysconfig.get_config_var(
+    "Py_GIL_DISABLED"
+)
+if limited_api:
+    define_macros.append(("Py_LIMITED_API", "0x030B0000"))
+
 extensions = [
     Extension(
         "extinction._extinction",
@@ -36,6 +48,7 @@ extensions = [
         depends=depends_files,
         define_macros=define_macros,
         extra_compile_args=extra_compile_args,
+        py_limited_api=limited_api,
     )
 ]
 
@@ -49,4 +62,6 @@ setup(
     ext_modules=cythonize(
         extensions, language_level=3, include_path=[here], force=True
     ),
+    # Tag the wheel cp311-abi3.
+    options={"bdist_wheel": {"py_limited_api": "cp311"}} if limited_api else {},
 )
