@@ -9,8 +9,7 @@ import extinction
 
 # Resolve test data relative to this file so the suite can be run from any
 # working directory, including against an installed wheel.
-TESTDATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'testdata')
+TESTDATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
 
 
 def test_ccm89():
@@ -28,14 +27,12 @@ def test_ccm89():
     # U, B, V, R, I, J, H, K band effective wavelengths from CCM '89 table 3
 
     x_inv_microns = np.array([2.78, 2.27, 1.82, 1.43, 1.11, 0.80, 0.63, 0.46])
-    wave = 1.e4 / x_inv_microns
+    wave = 1.0e4 / x_inv_microns
 
     # A(lambda)/A(V) for R_V = 3.1 from Table 3 of CCM '89
-    ref_values = np.array([1.569, 1.337, 1.000, 0.751, 0.479, 0.282, 0.190,
-                           0.114])
+    ref_values = np.array([1.569, 1.337, 1.000, 0.751, 0.479, 0.282, 0.190, 0.114])
 
-    assert_allclose(extinction.ccm89(wave, 1.0, 3.1), ref_values,
-                    rtol=0.016, atol=0.)
+    assert_allclose(extinction.ccm89(wave, 1.0, 3.1), ref_values, rtol=0.016, atol=0.0)
 
 
 def test_odonnell94():
@@ -59,74 +56,138 @@ def test_odonnell94():
     # The SFD98 tabulated values go to 1e-3, so we should be able to match at
     # that level.
 
-    wave = np.array([3372., 4404., 5428., 6509., 8090.,
-                     3683., 4393., 5519., 6602., 8046.,
-                     12660., 16732., 22152.,
-                     5244., 6707., 7985., 9055.,
-                     6993.,
-                     3502., 4676., 4127.,
-                     4861., 5479.,
-                     3546., 4925., 6335., 7799., 9294.,
-                     3047., 4711., 5498.,
-                     6042., 7068., 8066.,
-                     4814., 6571., 8183.])
+    wave = np.array(
+        [
+            3372.0,
+            4404.0,
+            5428.0,
+            6509.0,
+            8090.0,
+            3683.0,
+            4393.0,
+            5519.0,
+            6602.0,
+            8046.0,
+            12660.0,
+            16732.0,
+            22152.0,
+            5244.0,
+            6707.0,
+            7985.0,
+            9055.0,
+            6993.0,
+            3502.0,
+            4676.0,
+            4127.0,
+            4861.0,
+            5479.0,
+            3546.0,
+            4925.0,
+            6335.0,
+            7799.0,
+            9294.0,
+            3047.0,
+            4711.0,
+            5498.0,
+            6042.0,
+            7068.0,
+            8066.0,
+            4814.0,
+            6571.0,
+            8183.0,
+        ]
+    )
 
-    ref_values = np.array([1.664, 1.321, 1.015, 0.819, 0.594,
-                           1.521, 1.324, 0.992, 0.807, 0.601,
-                           0.276, 0.176, 0.112,
-                           1.065, 0.793, 0.610, 0.472,
-                           0.755,
-                           1.602, 1.240, 1.394,
-                           1.182, 1.004,
-                           1.579, 1.161, 0.843, 0.639, 0.453,
-                           1.791, 1.229, 0.996,
-                           0.885, 0.746, 0.597,
-                           1.197, 0.811, 0.580])
+    ref_values = np.array(
+        [
+            1.664,
+            1.321,
+            1.015,
+            0.819,
+            0.594,
+            1.521,
+            1.324,
+            0.992,
+            0.807,
+            0.601,
+            0.276,
+            0.176,
+            0.112,
+            1.065,
+            0.793,
+            0.610,
+            0.472,
+            0.755,
+            1.602,
+            1.240,
+            1.394,
+            1.182,
+            1.004,
+            1.579,
+            1.161,
+            0.843,
+            0.639,
+            0.453,
+            1.791,
+            1.229,
+            0.996,
+            0.885,
+            0.746,
+            0.597,
+            1.197,
+            0.811,
+            0.580,
+        ]
+    )
 
-    assert_allclose(extinction.odonnell94(wave, 1.0, 3.1), ref_values,
-                    rtol=0.0051, atol=0.)
+    assert_allclose(
+        extinction.odonnell94(wave, 1.0, 3.1), ref_values, rtol=0.0051, atol=0.0
+    )
 
 
 def test_fitzpatrick99_knots():
     """Test that knots match values in Fitzpatrick (1999) Table 3 for
     fitzpatrick99 function (with R_V = 3.1)"""
 
-    wave = np.array([np.inf, 26500., 12200., 6000., 5470., 4670., 4110.,
-                     2700., 2600.])
-    x = np.array([0.0, 0.377, 0.820, 1.667, 1.828, 2.141, 2.433, 3.704,
-                  3.846])
+    wave = np.array(
+        [np.inf, 26500.0, 12200.0, 6000.0, 5470.0, 4670.0, 4110.0, 2700.0, 2600.0]
+    )
+    x = np.array([0.0, 0.377, 0.820, 1.667, 1.828, 2.141, 2.433, 3.704, 3.846])
 
     # A(lambda) values for E(B-V) = 1 or A_V = 3.1
-    ref_values = np.array([0.0, 0.265, 0.829, 2.688, 3.055, 3.806, 4.315,
-                           6.265, 6.591])
+    ref_values = np.array([0.0, 0.265, 0.829, 2.688, 3.055, 3.806, 4.315, 6.265, 6.591])
 
-    assert_allclose(extinction.fitzpatrick99(wave, 3.1, unit='aa'), ref_values,
-                    rtol=0., atol=0.001)
+    assert_allclose(
+        extinction.fitzpatrick99(wave, 3.1, unit="aa"), ref_values, rtol=0.0, atol=0.001
+    )
 
     # atol = 0.002 because the input values are less precise (e.g., 0.377
     # rather than 1.e4 / 26500.)
-    assert_allclose(extinction.fitzpatrick99(x, 3.1, unit='invum'), ref_values,
-                    rtol=0., atol=0.002)
+    assert_allclose(
+        extinction.fitzpatrick99(x, 3.1, unit="invum"), ref_values, rtol=0.0, atol=0.002
+    )
 
 
 def test_fitzpatrick99_rv_knots():
     """Test that Fitzpatrick function has the right R_V dependence at
     the knots."""
 
-    wave = np.array([26500., 12200., 6000., 5470., 4670., 4110.])
+    wave = np.array([26500.0, 12200.0, 6000.0, 5470.0, 4670.0, 4110.0])
 
     # "the IR points at 1/lambda < 1 invum are simply scaled by R/3.1"
     # "the optical points are vertically offset by an amount R - 3.1 , with
     # slight corrections made to preserve the normalization"
 
-    for r in [1., 2., 3., 4., 5., 6.]:
+    for r in [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]:
         # `expected` gives expected A(lambda) for E(B-V) = 1 (A_V = R)
-        expected = [r / 3.1 * 0.265,      # Table 3 scaled by R/3.1
-                    r / 3.1 * 0.829,      # Table 3 scaled by R/3.1
-                    -0.426 + 1.0044 * r,  # Table 4
-                    -0.050 + 1.0016 * r,  # Table 4
-                    0.701 + 1.0016 * r,   # Table 4
-                    1.208 + 1.0032 * r - 0.00033 * r**2]  # Table 4
+        expected = [
+            r / 3.1 * 0.265,  # Table 3 scaled by R/3.1
+            r / 3.1 * 0.829,  # Table 3 scaled by R/3.1
+            -0.426 + 1.0044 * r,  # Table 4
+            -0.050 + 1.0016 * r,  # Table 4
+            0.701 + 1.0016 * r,  # Table 4
+            1.208 + 1.0032 * r - 0.00033 * r**2,
+        ]  # Table 4
 
         result = extinction.Fitzpatrick99(r)(wave, r)
 
@@ -141,7 +202,7 @@ def test_fitzpatrick99_idl():
     """Test that result matches implementation in IDL procedure FM_UNRED"""
 
     for r_v in (2.3, 3.1, 4.0, 5.3):
-        fname = os.path.join(TESTDATA_DIR, 'fm_unred_{:3.1f}.dat'.format(r_v))
+        fname = os.path.join(TESTDATA_DIR, f"fm_unred_{r_v:3.1f}.dat")
         wave, a_lambda_ref = np.loadtxt(fname, unpack=True)
         a_lambda = extinction.Fitzpatrick99(r_v)(wave, 1.0)
         assert_allclose(a_lambda, a_lambda_ref, rtol=0.00005)
@@ -159,28 +220,36 @@ def test_fitzpatrick99_r_v():
 def test_fitzpatrick99_func():
     """Check passing R_V."""
 
-    wave = np.array([2000., 30000.])
+    wave = np.array([2000.0, 30000.0])
     for r_v in (3.1, 4.0):
-        assert np.all(extinction.Fitzpatrick99(r_v)(wave, 1.0) ==
-                      extinction.fitzpatrick99(wave, 1.0, r_v))
+        assert np.all(
+            extinction.Fitzpatrick99(r_v)(wave, 1.0)
+            == extinction.fitzpatrick99(wave, 1.0, r_v)
+        )
 
 
 def test_fm07():
-    wave = np.arange(3000., 9000., 1000)
+    wave = np.arange(3000.0, 9000.0, 1000)
 
     # from running the code; we're just checking that results don't change!
-    ref_values = [1.84192286, 1.42645161, 1.13842341, 0.88843179, 0.69226384,
-                  0.54709373]
-    assert_allclose(extinction.fm07(wave, 1.), ref_values)
+    ref_values = [
+        1.84192286,
+        1.42645161,
+        1.13842341,
+        0.88843179,
+        0.69226384,
+        0.54709373,
+    ]
+    assert_allclose(extinction.fm07(wave, 1.0), ref_values)
 
 
 def test_calzetti00():
     """Test calzetti against another translation of the same base code"""
 
-    wave = np.array([2000., 4000., 8000.])
+    wave = np.array([2000.0, 4000.0, 8000.0])
     flux = np.ones(3)
 
-    new_flux = extinction.apply(extinction.calzetti00(wave, -1., 3.1), flux)
+    new_flux = extinction.apply(extinction.calzetti00(wave, -1.0, 3.1), flux)
 
     # derived using Julia version of IDL calz_unred
     ref_values = np.array([10.5288, 3.88153, 1.61769])

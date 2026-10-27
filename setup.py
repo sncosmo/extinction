@@ -13,14 +13,12 @@ here = os.path.dirname(os.path.abspath(__file__))
 # Everything except the version and the extension itself lives in
 # pyproject.toml. Synchronize the version from code.
 fname = os.path.join("src", "extinction", "_extinction.pyx")
-version = re.findall(r"__version__ = \"(.*?)\"", open(fname).read())[0]
+with open(fname) as f:
+    version = re.findall(r"__version__ = \"(.*?)\"", f.read())[0]
 
 # Build Cython extension
 source_files = [fname, os.path.join("extern", "bs.c")]
-depends_files = [
-    os.path.join("extern", "bs.h"),
-    os.path.join("extern", "bsplines.pxi")
-]
+depends_files = [os.path.join("extern", "bs.h"), os.path.join("extern", "bsplines.pxi")]
 include_dirs = [numpy.get_include(), "extern"]
 
 # MSVC does not understand -std=c11 and only warns about it.

@@ -1,13 +1,22 @@
-from typing import Literal
+from typing import Literal, TypeAlias
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 __version__: str
-__all__: list[str]
+__all__ = [
+    "Fitzpatrick99",
+    "apply",
+    "calzetti00",
+    "ccm89",
+    "fitzpatrick99",
+    "fm07",
+    "odonnell94",
+    "remove",
+]
 
-_Unit = Literal["aa", "invum"]
-_Array = NDArray[np.float64]
+_Unit: TypeAlias = Literal["aa", "invum"]
+_Array: TypeAlias = NDArray[np.float64]
 
 def ccm89(
     wave: _Array,
@@ -43,15 +52,9 @@ class Fitzpatrick99:
     @property
     def r_v(self) -> float: ...
     def __init__(self, r_v: float = ...) -> None: ...
-    def __call__(
-        self, wave: _Array, a_v: float, unit: _Unit = ...
-    ) -> _Array: ...
+    def __call__(self, wave: _Array, a_v: float, unit: _Unit = ...) -> _Array: ...
 
 # Unlike the wavelength arguments above, which go through typed memoryviews,
 # these are plain numpy arithmetic and accept any array-like of any dtype.
-def apply(
-    extinction: ArrayLike, flux: ArrayLike, inplace: bool = ...
-) -> _Array: ...
-def remove(
-    extinction: ArrayLike, flux: ArrayLike, inplace: bool = ...
-) -> _Array: ...
+def apply(extinction: ArrayLike, flux: ArrayLike, inplace: bool = ...) -> _Array: ...
+def remove(extinction: ArrayLike, flux: ArrayLike, inplace: bool = ...) -> _Array: ...
