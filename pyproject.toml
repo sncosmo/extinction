@@ -16,7 +16,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Kyle Barbary", email = "kylebarbary@gmail.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 # Wheels are built against numpy 2, which stays ABI compatible back to 1.19.3.
 dependencies = ["numpy>=1.19.3"]
 dynamic = ["version"]
@@ -24,7 +24,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -33,6 +32,21 @@ classifiers = [
     "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Free Threading :: 3 - Stable",
     "Topic :: Scientific/Engineering :: Astronomy",
+]
+
+[dependency-groups]
+test = ["pytest"]
+docs = ["matplotlib", "numpydoc", "sphinx", "sphinx-rtd-theme"]
+dev = [
+    { include-group = "test" },
+    { include-group = "docs" },
+    "ty",
+    # The build requirements, so that ty can check setup.py. The ty hook does
+    # not install the project, so numpy here is also what ty uses for the
+    # stub and the tests.
+    "Cython>=3.1",
+    "numpy>=2",
+    "setuptools>=77",
 ]
 
 [project.urls]
@@ -50,15 +64,41 @@ where = ["src"]
 [tool.setuptools.package-data]
 extinction = ["py.typed", "*.pyi"]
 
-# The Cython source and its generated C belong in the sdist, not in binary
-# wheels; now that they live inside the package directory, MANIFEST.in would
-# otherwise pull them in.
+# The Cython source belongs in the sdist, not in binary wheels; now that it
+# lives inside the package directory, MANIFEST.in would otherwise pull it in.
+# setup.py regenerates the C next to it on every build, so neither the sdist
+# (see MANIFEST.in) nor the wheels ship the C.
 [tool.setuptools.exclude-package-data]
 extinction = ["*.pyx", "*.c"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.ruff]
+extend-exclude = ["extern"]
+
+# uv rebuilds the project only when one of these changes, and this list
+# replaces the default one. Add the Cython and C sources, so that `uv run` and
+# `uv sync` rebuild the compiled extension after they change. Also rebuild
+# when .venv is created again: the editable install builds the extension in
+# src/extinction, outside .venv, and `git clean -fdx` deletes both.
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "setup.py" },
+    { file = "src/extinction/*.pyx" },
+    { file = "extern/*" },
+    { dir = ".venv" },
+]
+
 [tool.cibuildwheel]
-test-requires = "pytest"
+build-frontend = "build[uv]"
+# numpy has no Windows ARM64 wheels for Python 3.10, and its source build fails
+# on windows-11-arm. cibuildwheel would stop there, before it builds the wheels
+# for the newer Python versions.
+skip = ["cp310-win_arm64"]
+# setup.py builds a cp311-abi3 wheel on Python 3.11. cibuildwheel then does
+# not build again for the later Python versions with the GIL: it tests the
+# abi3 wheel on each of them.
+test-groups = ["test"]
 test-command = "pytest {project}/tests"

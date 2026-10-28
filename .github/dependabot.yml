@@ -5,7 +5,40 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Wait a week before updating to a new release.
+    cooldown:
+      default-days: 7
     groups:
       actions:
+        patterns:
+          - "*"
+
+  # Dependabot only looks for updates that support Python 3.10, the oldest
+  # version in requires-python, and it applies each update to every Python
+  # version. So it never updates the packages that uv.lock locks at newer
+  # versions for newer Pythons, such as numpy and matplotlib, and an update
+  # for Python 3.10 to one of them downgrades it on the newer Pythons. Run
+  # `uv lock --upgrade` to update them.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: monthly
+    # Wait a week before updating to a new release.
+    cooldown:
+      default-days: 7
+    groups:
+      python-packages:
+        patterns:
+          - "*"
+
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: monthly
+    # Wait a week before updating to a new release.
+    cooldown:
+      default-days: 7
+    groups:
+      hooks:
         patterns:
           - "*"

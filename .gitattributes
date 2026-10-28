@@ -1,0 +1,6 @@
+# Check out text files with LF line endings on every platform, so that the
+# mixed-line-ending hook does not fight core.autocrlf=true on Windows.
+* text=auto eol=lf
+# Leave vendored code and test data byte for byte as upstream supplied them.
+extern/** -text
+tests/testdata/** -text

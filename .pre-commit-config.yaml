@@ -1,0 +1,47 @@
+# Run with prek (https://github.com/j178/prek) or pre-commit:
+#   uv tool install prek   # a hook installed with uvx breaks after uv cache clean
+#   prek install           # run the hooks on each commit
+#   prek run -a            # run the hooks on all files
+# Leave vendored code and test data byte for byte as upstream supplied them.
+exclude: ^(extern|tests/testdata)/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      # Use LF line endings, not CRLF.
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.6
+    hooks:
+      # Make sure that uv.lock agrees with pyproject.toml.
+      - id: uv-lock
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty check
+        # ty reads the stub in src/, so do not install the project, which
+        # compiles the extension and needs a C compiler. uv.lock installs
+        # numpy 2.2 on Python 3.10 and newer numpy on newer Python, and their
+        # stubs differ, so always check with Python 3.10, in a temporary
+        # environment that leaves .venv alone.
+        entry: uv run --isolated --locked --only-group dev --python 3.10 ty check
+        language: system
+        pass_filenames: false
+        # Run on every commit, not only when Python files change: a change to
+        # pyproject.toml or uv.lock, or a deletion, can change the result.
+        always_run: true

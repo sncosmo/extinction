@@ -73,3 +73,7 @@ target/
 # Pipenv
 Pipfile
 Pipfile.lock
+
+# uv
+.venv/
+.ruff_cache/

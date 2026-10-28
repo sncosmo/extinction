@@ -1,0 +1,97 @@
+# This workflow uses uv to install the locked dependencies from uv.lock and
+# run the tests, and uses prek to run the hooks in .pre-commit-config.yaml.
+
+name: Test
+
+on:
+  push:
+    # Pull requests from dependabot run the tests through pull_request, so
+    # do not run them again for the pushes to the dependabot branches. A
+    # branch filter alone would also stop the runs for tags, so list them.
+    branches-ignore:
+      - "dependabot/**"
+    tags:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+
+    strategy:
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t", "3.15", "3.15t"]
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+
+    name: Test on python ${{ matrix.python }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+          allow-prereleases: true
+          check-latest: true
+      - name: Setup uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          # setup-uv keys the cache on `python --version`, which is the same
+          # for the default and the free-threaded builds.
+          cache-suffix: ${{ matrix.python }}
+      - name: Run tests
+        # Use the Python from setup-python, which also supplies pre-releases.
+        # Install only the test group, which is all that the tests need. The
+        # docs and dev tools would add about 35 packages to every job.
+        env:
+          UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
+        run: uv run --locked --no-default-groups --group test pytest
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build the sdist and a wheel from it
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          cache-suffix: build
+      - name: Build the sdist, and a wheel from the sdist
+        # Without --sdist or --wheel, uv builds the wheel from the sdist, not
+        # from the checkout, so this fails when MANIFEST.in leaves out a file
+        # that the build needs. The test job uses an editable install.
+        # Python 3.11 makes the cp311-abi3 wheel that the release builds.
+        run: uv build --python 3.11
+      - name: Check that the wheel uses only the stable ABI of Python 3.11
+        run: uvx abi3audit@0.0.26 --strict --report dist/*.whl
+      - name: Test the wheel with the newest dependencies
+        # Do not use uv.lock here, so that a new numpy release that breaks
+        # extinction fails CI. Dependabot does not update numpy in uv.lock,
+        # see .github/dependabot.yml. Use a newer Python than the build, to
+        # test that the abi3 wheel works there.
+        run: uv run --isolated --no-project --python 3.14 --with pytest --with dist/*.whl pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Run prek hooks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - name: Run prek
+        uses: j178/prek-action@44924fe9ef4a6f88253c4b6b1bf11c689d3ce53d # v3.1.0
+        with:
+          # Use the newest prek whose checksum this version of the action
+          # knows, so that the download is verified. The default, latest,
+          # follows each new prek release at once and skips the check.
+          prek-version: latest-known

@@ -5,46 +5,62 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, windows-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-26.04-arm, windows-latest, windows-11-arm, macos-latest]
 
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Build wheels
         # For very recent Python versions, wheels from e.g. numpy might not be
         # available yet which can cause the build to fail. Keep going, and upload
-        # the wheels for all of the previous versions when that happens.
+        # the wheels that were built before the failure stopped cibuildwheel.
+        # On Linux, cibuildwheel copies the wheels out of the manylinux
+        # container, and then out of the musllinux one, only after all of the
+        # builds in it pass, so a failure loses every wheel of that container,
+        # and a manylinux failure also stops the musllinux builds.
         continue-on-error: true
-        uses: pypa/cibuildwheel@v4.2.1
+        uses: pypa/cibuildwheel@f9b966cfadf4109556cadc5bb39ddb72d0ce664e # v4.3.5
+        with:
+          # The build[uv] frontend of cibuildwheel needs uv on Windows and macOS.
+          extras: uv
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
+          # Fail when this runner built no wheels, so that the release is not
+          # uploaded to PyPI without them.
+          if-no-files-found: error
 
   build_sdist:
     name: Build source distribution
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v7
-
-      - name: Install build
-        run: python -m pip install build
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          enable-cache: false
 
       - name: Build sdist
-        run: python -m build --sdist
+        # Without --sdist, uv also builds a wheel from the sdist, which checks
+        # that the sdist builds. Only the sdist is uploaded.
+        run: uv build
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cibw-sdist
           path: dist/*.tar.gz
@@ -52,15 +68,15 @@ jobs:
   upload_pypi:
     name: Upload to PyPI
     needs: [build_wheels, build_sdist]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
         id-token: write
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
             pattern: cibw-*
             path: dist
             merge-multiple: true
 
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3

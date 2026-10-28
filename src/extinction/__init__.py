@@ -12,5 +12,14 @@ from extinction._extinction import (
     remove,
 )
 
-__all__ = ['ccm89', 'odonnell94', 'Fitzpatrick99', 'fitzpatrick99', 'fm07',
-           'calzetti00', 'apply', 'remove', '__version__']
+__all__ = [
+    "Fitzpatrick99",
+    "__version__",
+    "apply",
+    "calzetti00",
+    "ccm89",
+    "fitzpatrick99",
+    "fm07",
+    "odonnell94",
+    "remove",
+]

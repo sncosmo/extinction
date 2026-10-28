@@ -117,11 +117,17 @@ def ccm89(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     Notes
     -----
@@ -156,8 +162,10 @@ def ccm89(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':
@@ -222,11 +230,17 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     Notes
     -----
@@ -248,7 +262,7 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     References
     ----------
     .. [1] Cardelli, J. A., Clayton, G. C., & Mathis, J. S. 1989, ApJ, 345, 245
-    .. [2] O'Donnell, J. E. 1994, ApJ, 422, 158O 
+    .. [2] O'Donnell, J. E. 1994, ApJ, 422, 158O
     .. [3] Savage & Mathis 1979, ARA&A, 17, 73
     .. [4] Longo et al. 1989, ApJ, 339,474
     .. [5] Valencic et al. 2004, ApJ, 616, 912
@@ -264,8 +278,10 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':
@@ -371,7 +387,7 @@ cdef class Fitzpatrick99(object):
 
     cdef bs_spline1d *spline   # pointer to c struct
     cdef readonly double r_v
-    
+
     def __cinit__(self, double r_v=3.1):
         self.r_v = r_v
 
@@ -404,7 +420,7 @@ cdef class Fitzpatrick99(object):
         cdef size_t i
         cdef size_t n
         cdef bs_errorcode code
-        
+
         # translate `wave` to inverse microns
         if unit == 'invum':
             pass
@@ -426,7 +442,7 @@ cdef class Fitzpatrick99(object):
         code = bs_spline1d_eval(self.spline, to_bs_array(wave_view),
                                 to_bs_array(out_view))
         assert_ok(code)
-        
+
         # Analytic function in the UV (< 2700 Angstroms).
         for i in range(n):
             # for optical/IR, `out` is actually k, but we wanted
@@ -618,7 +634,7 @@ def fm07(np.ndarray wave not None, double a_v, unit='aa'):
                             to_bs_array(out_view))
     assert_ok(code)
     bs_spline1d_free(spline)
-    
+
     # Analytic function in the UV (< 2700 Angstroms).
     for i in range(n):
         # for optical/IR, `out` is actually k, but we wanted
@@ -651,7 +667,7 @@ cdef inline double calzetti00k_ir_invum(double x):
 
 cdef inline double calzetti00_invum(double x, double r_v):
     cdef double k
-    
+
     if x > 1.5873015873015872:  # 1. / 0.63
         k = calzetti00k_uv_invum(x)
     else:
@@ -684,11 +700,17 @@ def calzetti00(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     """
 
@@ -701,8 +723,10 @@ def calzetti00(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':
@@ -768,7 +792,7 @@ def remove(extinction, flux, inplace=False):
 
     Remove extinction from flux values.
 
-    This is a convenience function to "deredden" fluxes. It simply performs 
+    This is a convenience function to "deredden" fluxes. It simply performs
     ``flux * 10**(0.4 * extinction)``: flux is increased (for positive
     extinction values).
 

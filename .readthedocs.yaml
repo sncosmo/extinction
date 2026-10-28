@@ -3,7 +3,9 @@ version: 2
 build:
   os: ubuntu-24.04
   tools:
-    python: "3.13"
+    # Keep this the same as .python-version: uv sync would otherwise replace
+    # the environment of Read the Docs with one for that Python version.
+    python: "3.14"
 
 sphinx:
   configuration: docs/conf.py
@@ -11,8 +13,12 @@ sphinx:
 
 python:
   install:
-    - requirements: docs/rtd-pip-requirements
-    # conf.py imports extinction to read the version, and the plot directives
-    # call into it, so the compiled extension has to be installed.
-    - method: pip
-      path: .
+    # Read the Docs runs `uv sync --group docs`, which installs the versions
+    # in uv.lock. It cannot pass --no-default-groups, so uv also installs the
+    # default dev group, which includes docs. conf.py imports extinction to
+    # read the version, and the plot directives call into it, so this also
+    # installs the project with its compiled extension.
+    - method: uv
+      command: sync
+      groups:
+        - docs

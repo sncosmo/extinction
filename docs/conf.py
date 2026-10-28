@@ -1,30 +1,33 @@
 #
 # build requires sphinx_rtd_theme and numpydoc.
 
-import sys
 import os
+import sys
+
 import extinction
 
 # ensure that plot helper is on the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # generate api directory if it doesn't already exist
-if not os.path.exists('api'):
-    os.mkdir('api')
+if not os.path.exists("api"):
+    os.mkdir("api")
 
 # -- General configuration ------------------------------------------------
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://numpy.org/doc/stable/', None)}
+    "python": ("https://docs.python.org/3/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+}
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'numpydoc',
-    'matplotlib.sphinxext.plot_directive']
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "numpydoc",
+    "matplotlib.sphinxext.plot_directive",
+]
 
 numpydoc_show_class_members = False
 autosummary_generate = True
@@ -32,36 +35,36 @@ autoclass_content = "class"
 autodoc_default_options = {"members": True}
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'extinction'
-copyright = u'2016, Kyle Barbary and contributors'
+project = "extinction"
+copyright = "2016, Kyle Barbary and contributors"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # THe short X.Y version.
-version = '.'.join(extinction.__version__.split('.')[0:2])
+version = ".".join(extinction.__version__.split(".")[0:2])
 
 # The full version, including alpha/beta/rc tags.
 release = extinction.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-default_role = 'obj'
+default_role = "obj"
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -76,38 +79,32 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = []
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'extinctiondoc'
+htmlhelp_basename = "extinctiondoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
-
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
-
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'extinction.tex', u'extinction Documentation',
-   u'Kyle Barbary', 'manual'),
+    ("index", "extinction.tex", "extinction Documentation", "Kyle Barbary", "manual"),
 ]
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'extinction', u'extinction Documentation',
-     [u'Kyle Barbary'], 1)
-]
+man_pages = [("index", "extinction", "extinction Documentation", ["Kyle Barbary"], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -115,7 +112,13 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'extinction', u'extinction Documentation',
-   u'Kyle Barbary', 'extinction', 'One line description of project.',
-   'Miscellaneous'),
+    (
+        "index",
+        "extinction",
+        "extinction Documentation",
+        "Kyle Barbary",
+        "extinction",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
