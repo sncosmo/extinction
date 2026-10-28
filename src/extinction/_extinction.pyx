@@ -117,11 +117,17 @@ def ccm89(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     Notes
     -----
@@ -156,8 +162,10 @@ def ccm89(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':
@@ -222,11 +230,17 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     Notes
     -----
@@ -264,8 +278,10 @@ def odonnell94(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':
@@ -684,11 +700,17 @@ def calzetti00(const double[:] wave, double a_v, double r_v, unit='aa',
     unit : {'aa', 'invum'}, optional
         Unit of wave: 'aa' (Angstroms) or 'invum' (inverse microns).
     out : np.ndarray, optional
-        If specified, store output values in this array.
+        If specified, store output values in this array. It must be a 1-d
+        float64 array with the same length as wave.
 
     Returns
     -------
     Extinction in magnitudes at each input wavelength.
+
+    Raises
+    ------
+    ValueError
+        If out is not a 1-d float64 array with the same length as wave.
 
     """
 
@@ -701,8 +723,10 @@ def calzetti00(const double[:] wave, double a_v, double r_v, unit='aa',
     if out is None:
         out = np.empty(n, dtype=np.float64)
     else:
-        assert out.ndim == 1 and out.shape[0] == wave.shape[0]
-        assert out.dtype == np.float64
+        if out.ndim != 1 or out.shape[0] != wave.shape[0]:
+            raise ValueError("out must be a 1-d array with the same length as wave")
+        if out.dtype != np.float64:
+            raise ValueError("out must have dtype float64")
 
     cdef scalar_func convert_wave
     if unit == 'aa':

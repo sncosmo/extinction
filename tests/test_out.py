@@ -45,3 +45,30 @@ def test_out_can_alias_wavelengths(law, unit):
 
     assert law(wave, 1.0, unit=unit, out=wave) is wave
     assert_array_equal(wave, expected)
+
+
+@pytest.mark.parametrize("law", LAWS)
+@pytest.mark.parametrize("size", [0, 2, 4])
+def test_out_wrong_length(law, size):
+    # The loop writes len(wave) values without bounds checks, so this check
+    # must not be an assert, which `python -O` skips.
+    wave = np.array([2000.0, 4000.0, 8000.0])
+    backing = np.full(8, -1.0)
+
+    with pytest.raises(ValueError, match="same length as wave"):
+        law(wave, 1.0, out=backing[:size])
+
+    assert_array_equal(backing, -1.0)
+
+
+@pytest.mark.parametrize("law", LAWS)
+@pytest.mark.parametrize(
+    ("shape", "dtype"),
+    [((1, 3), np.float64), (3, np.float32), (3, [("a", np.float64)])],
+    ids=["2d", "float32", "structured"],
+)
+def test_out_wrong_ndim_or_dtype(law, shape, dtype):
+    wave = np.array([2000.0, 4000.0, 8000.0])
+
+    with pytest.raises(ValueError, match="out must"):
+        law(wave, 1.0, out=np.zeros(shape, dtype=dtype))
